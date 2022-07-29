@@ -17,25 +17,25 @@ import com.nifcloud.mbaas.core.DoneCallback;
 import com.nifcloud.mbaas.core.NCMBException;
 import com.nifcloud.mbaas.core.NCMBUser;
 
-public class EmailSignupFragment extends Fragment {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
+public class EmailSignupFragment extends Fragment {
+    @BindView(R.id.email)
     EditText emailText;
-    AppCompatButton signUpBtn;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.email_signup_fragment,container,false);
 
-        emailText = root.findViewById(R.id.email);
-        signUpBtn = root.findViewById(R.id.email_signup_btn);
-
-        signUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signUp(emailText.getText().toString());
-            }
-        });
+        ButterKnife.bind(this,root);
         return root;
+    }
+
+    @OnClick(R.id.email_signup_btn)
+    void signUpClick(){
+        signUp(emailText.getText().toString());
     }
     private void signUp(String email){
 

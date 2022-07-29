@@ -15,32 +15,40 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import com.nifcloud.mbaas.core.DoneCallback;
+import com.nifcloud.mbaas.core.FindCallback;
 import com.nifcloud.mbaas.core.NCMBException;
+import com.nifcloud.mbaas.core.NCMBQuery;
 import com.nifcloud.mbaas.core.NCMBUser;
+
+import java.util.Collections;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 public class UsernameSignupFragment extends Fragment {
 
-    AppCompatButton signUpBtn;
-    EditText usernameText,passwordText;
+    @BindView(R.id.username)
+    EditText usernameText;
+    @BindView(R.id.pass)
+    EditText passwordText;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.username_sign_up_fragment,container,false);
-
-        signUpBtn = root.findViewById(R.id.username_signup_button);
-        usernameText = root.findViewById(R.id.username);
-        passwordText = root.findViewById(R.id.pass);
-        signUpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SignUp(usernameText.getText().toString(),passwordText.getText().toString());
-            }
-        });
+        ButterKnife.bind(this,root);
 
         return root;
     }
 
+    @OnClick(R.id.username_signup_button)
+    void signUpClick(){
+        SignUp(usernameText.getText().toString(),passwordText.getText().toString());
+    }
     private void SignUp(String username,String pass){
         //　User instance creation
         NCMBUser user = new NCMBUser();

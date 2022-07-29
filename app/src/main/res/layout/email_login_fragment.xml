@@ -40,6 +40,15 @@
         app:layout_constraintTop_toBottomOf="@+id/email"
         android:background="@drawable/edit_text_bg"/>
 
+    <TextView
+        android:id="@+id/reset_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset password"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pass" />
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/email_login_btn"
         android:layout_width="0dp"

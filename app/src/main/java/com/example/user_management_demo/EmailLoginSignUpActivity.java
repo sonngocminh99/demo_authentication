@@ -7,26 +7,33 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
+import com.nifcloud.mbaas.core.DoneCallback;
+import com.nifcloud.mbaas.core.NCMBException;
+import com.nifcloud.mbaas.core.NCMBUser;
 
-public class EmailLoginSignUpActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
+public class EmailLoginSignUpActivity extends AppCompatActivity implements ResetPassDialog.ResetPassDialogListener {
 
+    @BindView(R.id.tab_layout)
     TabLayout tabLayout;
+    @BindView(R.id.view_page)
     ViewPager viewPager;
-    TextView anonymousLoginText, usernameTransfer;
+    @BindView(R.id.anonymous_login)
+    TextView anonymousLoginText;
+    @BindView(R.id.username_transfer)
+    TextView usernameTransfer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_email_login_sign_up);
-        // Link object to view
-        tabLayout = findViewById(R.id.tab_layout);
-        viewPager = findViewById(R.id.view_page);
 
-        anonymousLoginText = findViewById(R.id.anonymous_login);
-        usernameTransfer = findViewById(R.id.username_transfer);
-
+        ButterKnife.bind(this);
         // tab layout set up
 
         tabLayout.addTab(tabLayout.newTab().setText("Login"));
@@ -39,20 +46,15 @@ public class EmailLoginSignUpActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(onTabSelectedListener(viewPager));
+    }
 
-
-
-        // set transfer to email authentication event
-
-        usernameTransfer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(EmailLoginSignUpActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-                overridePendingTransition(0, 0);
-            }
-        });
+    // set transfer to email authentication event
+    @OnClick(R.id.username_transfer)
+    void userNameTransfer(){
+        Intent intent = new Intent(EmailLoginSignUpActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+        overridePendingTransition(0, 0);
     }
     private TabLayout.OnTabSelectedListener onTabSelectedListener(final ViewPager pager) {
         return new TabLayout.OnTabSelectedListener() {
@@ -84,5 +86,24 @@ public class EmailLoginSignUpActivity extends AppCompatActivity {
 
             }
         };
+    }
+    private void sendResetPassMail(String email){
+        NCMBUser.requestPasswordResetInBackground(email, new DoneCallback() {
+            @Override
+            public void done(NCMBException error) {
+                if(error != null ){
+                    Toast.makeText(EmailLoginSignUpActivity.this,
+                            "Something wrong", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(EmailLoginSignUpActivity.this,
+                            "Reset email has been sent ", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void applyTexts(String email) {
+        sendResetPassMail(email);
     }
 }

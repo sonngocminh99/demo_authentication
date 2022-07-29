@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,32 +14,39 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
+import com.nifcloud.mbaas.core.DoneCallback;
 import com.nifcloud.mbaas.core.LoginCallback;
 import com.nifcloud.mbaas.core.NCMBException;
 import com.nifcloud.mbaas.core.NCMBUser;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class EmailLoginFragment extends Fragment {
-    EditText emailText,passwordText;
-    AppCompatButton loginBtn;
+    @BindView(R.id.email)
+    EditText emailText;
+    @BindView(R.id.pass)
+    EditText passwordText;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.email_login_fragment,container,false);
-
-        emailText = root.findViewById(R.id.email);
-        passwordText = root.findViewById(R.id.pass);
-        loginBtn = root.findViewById(R.id.email_login_btn);
-
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loginBtn(emailText.getText().toString(),passwordText.getText().toString());
-            }
-        });
+        ButterKnife.bind(this,root);
         return root;
     }
+    @OnClick(R.id.email_login_btn)
+    void loginClick(){
+        login(emailText.getText().toString(),passwordText.getText().toString());
+    }
 
-    private void loginBtn(String email, String pass) {
+    @OnClick(R.id.reset_pass)
+    void openDialog(){
+        ResetPassDialog resetPassDialog = new ResetPassDialog();
+        resetPassDialog.show(getActivity().getSupportFragmentManager(), "Reset Pass Dialog");
+
+    }
+    private void login(String email, String pass) {
         NCMBUser.loginWithMailAddressInBackground(email, pass, new LoginCallback() {
             @Override
             public void done(NCMBUser user, NCMBException e) {
@@ -55,6 +63,5 @@ public class EmailLoginFragment extends Fragment {
             }
         });
     }
-
 
 }
